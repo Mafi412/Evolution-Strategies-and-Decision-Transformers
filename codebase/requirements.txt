@@ -1,0 +1,19 @@
+numpy==1.24.3
+wheel
+tensorflow==2.8.3
+tensorflow_probability==0.16.0
+gym==0.26.2
+mujoco==2.2.2
+gym[atari,accept-rom-license]
+transformers==4.29.1
+opencv-python
+blosc
+pygame==2.1.2
+imageio==2.22.4
+moviepy==1.0.3
+pandas==2.1.2
+seaborn==0.13.0
+mpi4py==3.1.6
+tqdm
+--extra-index-url https://download.pytorch.org/whl/cu118
+torch==2.0.1+cu118
