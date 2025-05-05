@@ -138,3 +138,25 @@ class DecisionTransformer(TrajectoryModel):
             states, actions, None, returns_to_go, timesteps, attention_mask=attention_mask, **kwargs)
 
         return action_preds[0,-1]
+    
+
+    def get_batch_actions(self, states, actions, returns_to_go, timesteps, attention_masks, batch_size, device, **kwargs):
+        # Similar to get_action, but for a batch of inputs and for usage in TD3, also takes attention_masks as input
+
+        states = states.reshape(batch_size, -1, self.state_dim)
+        actions = actions.reshape(batch_size, -1, self.act_dim)
+        returns_to_go = returns_to_go.reshape(batch_size, -1, 1)
+        timesteps = timesteps.reshape(batch_size, -1)
+        attention_masks = attention_masks.reshape(batch_size, -1)
+
+        states = torch.tensor(states[:,-self.max_length:], dtype=torch.float32, device=device)
+        actions = torch.tensor(actions[:,-self.max_length:], dtype=torch.float32, device=device)
+        returns_to_go = torch.tensor(returns_to_go[:,-self.max_length:], dtype=torch.float32, device=device)
+        timesteps = torch.tensor(timesteps[:,-self.max_length:], dtype=torch.long, device=device)
+        attention_masks = torch.tensor(attention_masks[:,-self.max_length:], dtype=torch.long, device=device)
+        
+        _, action_preds, _ = self.forward(
+            states, actions, None, returns_to_go, timesteps, attention_mask=attention_masks, **kwargs
+        )
+
+        return action_preds[:,-1]
